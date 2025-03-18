@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genetic Algorithm Visualization</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <script src="dna.js"></script>
+    <script src="population.js"></script>
+    <script src="sketch.js"></script>
+</head>
+<body>
+    <h1>Genetic Algorithm Text Evolution</h1>
+    
+    <div class="container">
+        <div class="controls">
+            <div class="control-group">
+                <label for="target">Target Phrase:</label>
+                <input type="text" id="target" value="Hi My name is prabin acharya">
+            </div>
+            
+            <div class="control-group">
+                <label for="popsize">Population Size:</label>
+                <input type="number" id="popsize" value="500" min="10" max="2000">
+            </div>
+            
+            <div class="control-group">
+                <label for="mutation">Mutation Rate (%):</label>
+                <input type="number" id="mutation" value="1" min="0" max="100" step="0.1">
+            </div>
+            
+            <div class="control-group">
+                <label for="speed">Speed:</label>
+                <input type="range" id="speed" min="1" max="100" value="5">
+            </div>
+        </div>
+        
+        <div class="control-buttons">
+            <button id="start">Start Evolution</button>
+            <button id="stop" disabled>Stop</button>
+            <button id="reset">Reset</button>
+        </div>
+        
+        <div class="progress-container">
+            <label for="fitness-progress">Best Fitness Progress:</label>
+            <progress id="fitness-progress" value="0" max="100">0%</progress>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <label>Generation</label>
+                <div class="stat-value" id="generation">0</div>
+            </div>
+            
+            <div class="stat-card">
+                <label>Best Fitness</label>
+                <div class="stat-value" id="best-fitness">0%</div>
+            </div>
+            
+            <div class="stat-card">
+                <label>Average Fitness</label>
+                <div class="stat-value" id="avg-fitness">0%</div>
+            </div>
+            
+            <div class="stat-card">
+                <label>Elapsed Time</label>
+                <div class="stat-value" id="elapsed-time">0s</div>
+            </div>
+        </div>
+        
+        <div class="best-phrase">
+            <div class="best-phrase-title">Best Phrase:</div>
+            <div class="phrase-text" id="best-phrase">Waiting to start...</div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="fitness-chart"></canvas>
+        </div>
+        
+        <div id="p5-canvas" class="canvas-container"></div>
+        
+        <div class="population-sample">
+            <div class="sample-title">Sample Population (Showing 25 phrases):</div>
+            <div id="sample-list"></div>
+        </div>
+    </div>
+</body>
+</html>
