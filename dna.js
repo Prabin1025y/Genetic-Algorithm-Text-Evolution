@@ -3,6 +3,7 @@ class DNA {
     constructor(numOfGenes) {
         this.genes = [];
         this.fitness = 0;
+        this.score = 0;
 
         for (let i = 0; i < numOfGenes; i++) {
             this.genes[i] = this.randomChar();
@@ -21,14 +22,15 @@ class DNA {
 
     // Calculate fitness score
     calculateFitness(target) {
-        let score = 0;
+        this.score = 0;
         for (let i = 0; i < this.genes.length; i++) {
             if (this.genes[i] === target.charAt(i)) {
-                score ++;
+                this.score ++;
             }
         }
-        this.fitness = score / target.length;
-        return this.fitness;
+        // this.fitness = score / target.length;
+        this.fitness = pow(Math.E, this.score);
+        return this.score;
     }
 
     // Crossover DNA with partner

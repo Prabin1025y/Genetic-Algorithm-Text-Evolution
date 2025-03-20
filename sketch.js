@@ -10,8 +10,8 @@ let p5Canvas;
 // p5.js setup function
 function setup() {
     // Create canvas in the p5-canvas div
-    p5Canvas = createCanvas(800, 150);
-    p5Canvas.parent('p5-canvas');
+    // p5Canvas = createCanvas(800, 150);
+    // p5Canvas.parent('p5-canvas');
     
     // UI Controls
     const startBtn = document.getElementById('start');
@@ -32,58 +32,57 @@ function setup() {
 }
 
 // p5.js draw function
-// p5.js draw function
-function draw() {
-    background(240);
+// function draw() {
+//     background(240);
     
-    // Draw fitness history graph
-    if (fitnessHistory.length > 1) {
-        // Calculate scaling factors based on the full dataset
-        const maxDataPoints = fitnessHistory.length;
-        const scaleX = width / (maxDataPoints - 1);
+//     // Draw fitness history graph
+//     if (fitnessHistory.length > 1) {
+//         // Calculate scaling factors based on the full dataset
+//         const maxDataPoints = fitnessHistory.length;
+//         const scaleX = width / (maxDataPoints - 1);
         
-        // Draw average fitness
-        stroke(46, 204, 113, 150);
-        strokeWeight(1);
-        noFill();
-        beginShape();
-        for (let i = 0; i < avgFitnessHistory.length; i++) {
-            const x = i * scaleX;
-            const y = map(1 - avgFitnessHistory[i], 0, 1, 0, height);
-            vertex(x, y);
-        }
-        endShape();
+//         // Draw average fitness
+//         stroke(46, 204, 113, 150);
+//         strokeWeight(1);
+//         noFill();
+//         beginShape();
+//         for (let i = 0; i < avgFitnessHistory.length; i++) {
+//             const x = i * scaleX;
+//             const y = map(1 - avgFitnessHistory[i], 0, 1, 0, height);
+//             vertex(x, y);
+//         }
+//         endShape();
         
-        // Draw best fitness
-        stroke(52, 152, 219);
-        strokeWeight(2);
-        noFill();
-        beginShape();
-        for (let i = 0; i < fitnessHistory.length; i++) {
-            const x = i * scaleX;
-            const y = map(1 - fitnessHistory[i], 0, 1, 0, height);
-            vertex(x, y);
-        }
-        endShape();
-    }
+//         // Draw best fitness
+//         stroke(52, 152, 219);
+//         strokeWeight(2);
+//         noFill();
+//         beginShape();
+//         for (let i = 0; i < fitnessHistory.length; i++) {
+//             const x = i * scaleX;
+//             const y = map(1 - fitnessHistory[i], 0, 1, 0, height);
+//             vertex(x, y);
+//         }
+//         endShape();
+//     }
     
-    // Draw labels
-    fill(50);
-    noStroke();
-    textSize(12);
-    text("Fitness Over Time", 10, 20);
+//     // Draw labels
+//     fill(50);
+//     noStroke();
+//     textSize(12);
+//     text("Fitness Over Time", 10, 20);
     
-    // Draw scale
-    textAlign(RIGHT);
-    text("1.0", width - 10, 20);
-    text("0.0", width - 10, height - 10);
-    textAlign(LEFT);
+//     // Draw scale
+//     textAlign(RIGHT);
+//     text("1.0", width - 10, 20);
+//     text("0.0", width - 10, height - 10);
+//     textAlign(LEFT);
     
-    // Show current generation count
-    if (fitnessHistory.length > 0) {
-        text(`Generation: ${fitnessHistory.length}`, 10, height - 10);
-    }
-}
+//     // Show current generation count
+//     if (fitnessHistory.length > 0) {
+//         text(`Generation: ${fitnessHistory.length}`, 10, height - 10);
+//     }
+// }
 
 // Helper function to format time
 function formatTime(ms) {
@@ -241,7 +240,7 @@ function updateUI(state) {
     
     generationEl.textContent = state.generation;
     bestFitnessEl.textContent = `${Math.round(state.bestScore * 100)}%`;
-    avgFitnessEl.textContent = `${Math.round(state.averageFitness * 100)}%`;
+    avgFitnessEl.textContent = `${Math.round(state.averageScore * 100)}%`;
     
     // Update progress bar
     progressBar.value = state.bestScore * 100;
@@ -257,17 +256,18 @@ function updateUI(state) {
     
     // Sample population for display
     const sample = population.getSample(25);
+    const maxFitness = 
     sampleListEl.innerHTML = '';
     
     sample.forEach(item => {
         const phraseEl = document.createElement('div');
         phraseEl.className = 'phrase-item';
-        phraseEl.innerHTML = `${highlightMatches(item.phrase, targetInput.value)} (${Math.round(item.fitness * 100)}%)`;
+        phraseEl.innerHTML = `${highlightMatches(item.phrase, targetInput.value)} (${Math.round(item.score * 100)}%)`;
         sampleListEl.appendChild(phraseEl);
     });
     
     // Update chart
-    updateChart(state.generation, state.bestScore, state.averageFitness);
+    updateChart(state.generation, state.bestScore, state.averageScore);
     
     // Check if we're done
     if (state.isFinished && running) {
@@ -323,7 +323,6 @@ function initializePopulation() {
 
 // Run one generation of evolution
 function evolve() {
-    population.naturalSelection();
     population.generate();
     population.calculateFitness();
     const state = population.evaluate();
@@ -332,6 +331,7 @@ function evolve() {
 
 // Start evolution process
 function startEvolution() {
+    resetEvolution()
     const startBtn = document.getElementById('start');
     const stopBtn = document.getElementById('stop');
     const targetInput = document.getElementById('target');

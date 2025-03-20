@@ -2,14 +2,15 @@
 class Population {
     constructor(target, popCount, mutationRate) {
         this.population = [];
-        this.matingPool = [];
         this.target = target;
         this.mutationRate = mutationRate;
         this.generations = 0;
         this.finished = false;
         this.currentPhrase = "";
         this.bestScore = 0;
-        this.averageFitness = 0;
+        this.bestfitness = 0;
+        this.averageScore = 0;
+        this.maxfitness = pow(Math.E, target.length)
         
         // Initialize population
         for (let i = 0; i < popCount; i++) {
@@ -22,37 +23,28 @@ class Population {
 
     // Calculate fitness for all members of the population
     calculateFitness() {
-        let totalFitness = 0;
+        let totalScore = 0;
         
         this.population.forEach(dna => {
-            const fitness = dna.calculateFitness(this.target);
-            totalFitness += fitness;
+            const score = dna.calculateFitness(this.target);
+            totalScore += score;
         });
         
-        this.averageFitness = totalFitness / this.population.length;
+        this.averageScore = totalScore / this.population.length;
     }
 
-    // Create mating pool based on fitness values
-    naturalSelection() {
-        this.matingPool = [];
-        let maxFitness = 0;
-        
-        this.population.forEach(dna => {
-            if (dna.fitness > maxFitness) {
-                maxFitness = dna.fitness;
-            }
-        });
-        
-        this.population.forEach(dna => {
-            // Normalize fitness between a and 1
-            let normalizedFitness = dna.fitness / maxFitness;
-            // Scale to determine representation in mating pool
-            let numberOfChildInPool = Math.floor(normalizedFitness * 100);
-            
-            for (let i = 0; i < numberOfChildInPool; i++) {
-                this.matingPool.push(dna);
-            }
-        });
+    pickOne(population){
+        const totalFitness = population.reduce((a, dna)=> a + dna.fitness, 0);
+        let index = 0;
+        let r = random(totalFitness)
+        while(true){
+            // console.log(totalFitness)
+            r -= population[index].fitness;
+            if(r <= 0){
+                console.log("hello")
+                return population[index];}
+            index++;
+        }
     }
 
     // Create a new generation
@@ -62,8 +54,10 @@ class Population {
         
         for (let i = 0; i < this.population.length; i++) {
             // Select parents from mating pool
-            const parentA = this.matingPool[Math.floor(Math.random() * this.matingPool.length)];
-            const parentB = this.matingPool[Math.floor(Math.random() * this.matingPool.length)];
+
+            
+            const parentA = this.pickOne(this.population);
+            const parentB = this.pickOne(this.population);
             
             // Create child through crossover
             const child = parentA.crossover(parentB);
@@ -94,21 +88,21 @@ class Population {
         }
         
         // Update best overall if this one is better
-        if (bestIndividual.fitness > this.bestScore) {
-            this.bestScore = bestIndividual.fitness;
+        if (bestIndividual.score > this.bestScore) {
+            this.bestScore = bestIndividual.score;
             
             
             // Check if we've reached our target
-            if (this.bestScore === 1) {
+            if (this.currentPhrase === this.target) {
                 this.finished = true;
             }
         }
         
         return {
             bestPhrase: this.currentPhrase,
-            bestScore: this.bestScore,
+            bestScore: this.bestScore/this.target.length,
             generation: this.generations,
-            averageFitness: this.averageFitness,
+            averageScore: this.averageScore/ this.target.length,
             isFinished: this.finished
         };
     }
@@ -121,7 +115,7 @@ class Population {
         return sorted.slice(0, count).map(dna => {
             return {
                 phrase: dna.getStringFromGenes(),
-                fitness: dna.fitness
+                score: dna.score/ this.target.length
             };
         });
     }

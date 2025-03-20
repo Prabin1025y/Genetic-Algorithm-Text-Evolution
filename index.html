@@ -1,90 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Genetic Algorithm Visualization</title>
-    <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
     <script src="dna.js"></script>
     <script src="population.js"></script>
     <script src="sketch.js"></script>
 </head>
+
 <body>
     <h1>Genetic Algorithm Text Evolution</h1>
-    
+
     <div class="container">
-        <div class="controls">
+        <div class="current-phrase glass-card" id="best-phrase">
+            <i class="fas fa-dna" style="margin-right: 10px; color: var(--primary);"></i>
+            DISPLAY CURRENT PHRASE
+        </div>
+
+        <div class="progress-bar">
+            <progress id="fitness-progress" value="0" max="100">0%</progress>
+            <div class="progress"></div>
+        </div>
+
+        <div class="inputs-container glass-card">
             <div class="control-group">
-                <label for="target">Target Phrase:</label>
+                <label for="target"><i class="fas fa-bullseye" style="color: var(--secondary);"></i> Target
+                    Phrase:</label>
                 <input type="text" id="target" value="Hi My name is prabin acharya">
             </div>
-            
-            <div class="control-group">
-                <label for="popsize">Population Size:</label>
-                <input type="number" id="popsize" value="500" min="10" max="2000">
-            </div>
-            
-            <div class="control-group">
-                <label for="mutation">Mutation Rate (%):</label>
-                <input type="number" id="mutation" value="1" min="0" max="100" step="0.1">
-            </div>
-            
-            <div class="control-group">
-                <label for="speed">Speed:</label>
-                <input type="range" id="speed" min="1" max="100" value="5">
+            <div class="input2">
+                <div class="control-group">
+                    <label for="popsize"><i class="fas fa-users" style="color: var(--primary);"></i> Population
+                        Size:</label>
+                    <input type="number" id="popsize" value="500" min="10" max="2000">
+                </div>
+
+                <div class="control-group">
+                    <label for="mutation"><i class="fas fa-random" style="color: var(--primary);"></i> Mutation Rate
+                        (%):</label>
+                    <input type="number" id="mutation" value="1" min="0" max="100" step="0.1">
+                </div>
+
+                <div class="control-group">
+                    <label for="speed"><i class="fas fa-tachometer-alt" style="color: var(--primary);"></i>
+                        Speed:</label>
+                    <input type="range" id="speed" min="1" max="100" value="5">
+                </div>
             </div>
         </div>
-        
-        <div class="control-buttons">
-            <button id="start">Start Evolution</button>
-            <button id="stop" disabled>Stop</button>
-            <button id="reset">Reset</button>
+
+        <div class="control-buttons glass-card">
+            <button id="start"><i class="fas fa-play"></i> Start Evolution</button>
+            <button id="stop" disabled><i class="fas fa-stop"></i> Stop</button>
+            <button id="reset"><i class="fas fa-redo"></i> Reset</button>
         </div>
-        
-        <div class="progress-container">
-            <label for="fitness-progress">Best Fitness Progress:</label>
-            <progress id="fitness-progress" value="0" max="100">0%</progress>
-        </div>
-        
-        <div class="stats">
-            <div class="stat-card">
-                <label>Generation</label>
+
+        <div class="stats-container">
+            <div class="stat-card glass-card">
+                <label><i class="fas fa-history"></i> GENERATION</label>
                 <div class="stat-value" id="generation">0</div>
             </div>
-            
-            <div class="stat-card">
-                <label>Best Fitness</label>
+
+            <div class="stat-card glass-card">
+                <label><i class="fas fa-trophy"></i> BEST SCORE</label>
                 <div class="stat-value" id="best-fitness">0%</div>
             </div>
-            
-            <div class="stat-card">
-                <label>Average Fitness</label>
+
+            <div class="stat-card glass-card">
+                <label><i class="fas fa-chart-line"></i> AVG SCORE</label>
                 <div class="stat-value" id="avg-fitness">0%</div>
             </div>
-            
-            <div class="stat-card">
-                <label>Elapsed Time</label>
+
+            <div class="stat-card glass-card">
+                <label><i class="fas fa-clock"></i> TIME</label>
                 <div class="stat-value" id="elapsed-time">0s</div>
             </div>
         </div>
-        
-        <div class="best-phrase">
-            <div class="best-phrase-title">Best Phrase:</div>
-            <div class="phrase-text" id="best-phrase">Waiting to start...</div>
-        </div>
-        
-        <div class="chart-container">
+
+        <div class="chart-container glass-card">
+            <div class="history-title"><i class="fa-solid fa-chart-line"></i>Fitness Chart</div>
             <canvas id="fitness-chart"></canvas>
         </div>
-        
-        <div id="p5-canvas" class="canvas-container"></div>
-        
-        <div class="population-sample">
-            <div class="sample-title">Sample Population (Showing 25 phrases):</div>
+
+        <div class="history-container glass-card">
+            <div class="history-title"><i class="fas fa-code-branch"></i> Evolution History ( Last 25 )</div>
             <div id="sample-list"></div>
         </div>
+
+        <footer class="footer glass-card">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-dna"></i> Prabin.
+                </div>
+                <div class="footer-links">
+                    <a target="_blank" href="https://www.prabinacharya1.com.np"><i class="fa-solid fa-user-tie"></i></i> Portfolio</a>
+                    <a target="_blank" href="https://github.com/Prabin1025y/Genetic-Algorithm-Text-Evolution"><i class="fa-brands fa-github"></i> Source Code</a>
+                    <a target="_blank" href="https://www.linkedin.com/in/prabin-acharya-9345b32b5/"><i class="fa-brands fa-linkedin"></i> Prabin Acharya</a>
+                </div>
+                <div class="footer-copyright">
+                    © 2025 Prabin Acharya
+                </div>
+            </div>
+        </footer>
     </div>
+
+    <script>
+        // This script updates the progress bar to match the fitness-progress value
+        function updateProgressBar() {
+            const progress = document.getElementById('fitness-progress');
+            const progressBar = document.querySelector('.progress');
+            progressBar.style.width = progress.value + '%';
+            requestAnimationFrame(updateProgressBar);
+        }
+        updateProgressBar();
+    </script>
 </body>
+
 </html>
