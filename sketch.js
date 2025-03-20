@@ -10,8 +10,8 @@ let p5Canvas;
 // p5.js setup function
 function setup() {
     // Create canvas in the p5-canvas div
-    // p5Canvas = createCanvas(800, 150);
-    // p5Canvas.parent('p5-canvas');
+    p5Canvas = createCanvas(0,0);
+    p5Canvas.parent('p5-canvas');
     
     // UI Controls
     const startBtn = document.getElementById('start');
